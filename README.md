@@ -22,7 +22,7 @@ cd MyGuitareCourseParser
 
 ## Usage
 
-Rename and edit `Constant_example.py`:
+Rename and edit `Constants_example.py` to `Constants.py`:
 
 ```
 COURSE_NAME       	= ''
