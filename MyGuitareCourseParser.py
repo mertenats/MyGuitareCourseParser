@@ -7,6 +7,9 @@ COURSE_MODULES_URL = '/course-modules/'
 LESSONS_URL       = '/lessons/'
 
 
+
+output_file = open('links.txt', 'w')
+
 response = requests.get(
   Constants.API_BASE_URL + Constants.COURSE_NAME,
   headers = {
@@ -60,15 +63,17 @@ if response.status_code == 200:
 
             video_cdn_url = text_response[start_url:end_url + len(end_url_str)]
 
-            print('python3 ' + Constants.VIMEO_DOWNLOAD_PATH + ' --url ' + video_cdn_url + ' --output ' + Constants.COURSE_NAME.replace('-', '_') + '/'+ lesson_title + '/' + video_title + ' --destination ' + Constants.  VIDEO_DOWNLOAD_DST)
+            output_file.write('python3 ' + Constants.VIMEO_DOWNLOAD_PATH + ' --url ' + video_cdn_url + ' --output ' + Constants.COURSE_NAME.replace('-', '_') + '/'+ lesson_title + '/' + video_title + ' --destination ' + Constants.  VIDEO_DOWNLOAD_DST)
+            #print('python3 ' + Constants.VIMEO_DOWNLOAD_PATH + ' --url ' + video_cdn_url + ' --output ' + Constants.COURSE_NAME.replace('-', '_') + '/'+ lesson_title + '/' + video_title + ' --destination ' + Constants.  VIDEO_DOWNLOAD_DST)
           else:
             print(str(response.status_code) + ' GET ' + video_url)
       
       elif response.status_code == 403:
         print(str(response.status_code) + ' PATCH ' + lesson_url)
-        #break
+        break
       else:
         print(str(response.status_code) + ' PATCH ' + lesson_url)
 else:
   print(str(response.status_code) + ' GET ' + Constants.API_BASE_URL + Constants.COURSE_NAME)
 
+output_file.close()
