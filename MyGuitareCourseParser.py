@@ -30,7 +30,7 @@ if response.status_code == 200:
       userCourseModuleLesson_slug = userCourseModuleLesson['lesson']['data']['slug']
 
       lesson_url = Constants.API_BASE_URL + Constants.COURSE_NAME + COURSE_MODULES_URL + courseModule_slug + LESSONS_URL + userCourseModuleLesson_slug
-    
+      
       response = requests.patch(
         lesson_url,
         headers = {
@@ -43,7 +43,7 @@ if response.status_code == 200:
         json_response = response.json()
         
         lesson_title = str(json_response['data']['position']).zfill(2) + '_' + json_response['data']['lesson']['data']['title'].replace(' ', '_')
-        
+
         for video in json_response['data']['lesson']['data']['lessonParts']['data']:
           video_title = str(video['position']).zfill(2) + '_' + video['title'].replace(' ', '_')
           video_url = Constants.VIMEO_BASE_URL + video['video_id']
@@ -63,11 +63,45 @@ if response.status_code == 200:
 
             video_cdn_url = text_response[start_url:end_url + len(end_url_str)]
 
-            output_file.write('python3 ' + Constants.VIMEO_DOWNLOAD_PATH + ' --url ' + video_cdn_url + ' --output ' + Constants.COURSE_NAME.replace('-', '_') + '/'+ lesson_title + '/' + video_title + ' --destination ' + Constants.  VIDEO_DOWNLOAD_DST + '\n')
-            #print('python3 ' + Constants.VIMEO_DOWNLOAD_PATH + ' --url ' + video_cdn_url + ' --output ' + Constants.COURSE_NAME.replace('-', '_') + '/'+ lesson_title + '/' + video_title + ' --destination ' + Constants.  VIDEO_DOWNLOAD_DST)
+            output_file.write('python3 ' + Constants.VIMEO_DOWNLOAD_PATH + ' --url ' + video_cdn_url + ' --output ' + Constants.COURSE_NAME.replace('-', '_') + '/'+ lesson_title + '/' + video_title + ' --destination ' + Constants.VIDEO_DOWNLOAD_DST + '\n')
           else:
             print(str(response.status_code) + ' GET ' + video_url)
       
+        # tablatures
+        lesson_tablatures_url = Constants.API_BASE_URL + Constants.COURSE_NAME + COURSE_MODULES_URL + courseModule_slug + LESSONS_URL + userCourseModuleLesson_slug + '/tablatures'   
+
+        response = requests.get(
+          lesson_tablatures_url,
+          headers = {
+            'Accept': 'application/json',
+            'authorization': 'Bearer ' + Constants.API_BEARER
+          }
+        )
+        if response.status_code == 200:
+          json_tablatures_response = response.json()
+          for tablature in json_tablatures_response['data']:
+            output_file.write('wget ' + tablature['link'] + ' -P ' + Constants.VIDEO_DOWNLOAD_DST + Constants.COURSE_NAME.replace('-', '_') + '/'+ lesson_title + '/tablatures/' + '\n')
+        else:
+          print(str(response.status_code) + ' GET ' + lesson_tablatures_url)
+
+        # resources
+        lesson_resources_url = Constants.API_BASE_URL + Constants.COURSE_NAME + COURSE_MODULES_URL + courseModule_slug + LESSONS_URL + userCourseModuleLesson_slug + '/resources'   
+
+        response = requests.get(
+          lesson_resources_url,
+          headers = {
+            'Accept': 'application/json',
+            'authorization': 'Bearer ' + Constants.API_BEARER
+          }
+        )
+        if response.status_code == 200:
+          json_resources_response = response.json()
+          for resource in json_resources_response['data']:
+            output_file.write('wget ' + resource['link'] + ' -P ' + Constants.VIDEO_DOWNLOAD_DST + Constants.COURSE_NAME.replace('-', '_') + '/'+ lesson_title + '/resources/' + '\n')
+        else:
+          print(str(response.status_code) + ' GET ' + lesson_resources_url)
+
+
       elif response.status_code == 403:
         print(str(response.status_code) + ' PATCH ' + lesson_url)
         break
