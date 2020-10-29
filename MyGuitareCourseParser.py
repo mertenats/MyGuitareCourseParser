@@ -63,7 +63,7 @@ if response.status_code == 200:
 
             video_cdn_url = text_response[start_url:end_url + len(end_url_str)]
 
-            output_file.write('python3 ' + Constants.VIMEO_DOWNLOAD_PATH + ' --url ' + video_cdn_url + ' --output ' + Constants.COURSE_NAME.replace('-', '_') + '/'+ lesson_title + '/' + video_title + ' --destination ' + Constants.  VIDEO_DOWNLOAD_DST)
+            output_file.write('python3 ' + Constants.VIMEO_DOWNLOAD_PATH + ' --url ' + video_cdn_url + ' --output ' + Constants.COURSE_NAME.replace('-', '_') + '/'+ lesson_title + '/' + video_title + ' --destination ' + Constants.  VIDEO_DOWNLOAD_DST + '\n')
             #print('python3 ' + Constants.VIMEO_DOWNLOAD_PATH + ' --url ' + video_cdn_url + ' --output ' + Constants.COURSE_NAME.replace('-', '_') + '/'+ lesson_title + '/' + video_title + ' --destination ' + Constants.  VIDEO_DOWNLOAD_DST)
           else:
             print(str(response.status_code) + ' GET ' + video_url)
