@@ -3,16 +3,19 @@
 import requests
 import Constants
 
-course_name       = 'le-rythme-dans-la-peau'
+VIDEO_BASE_URL    = ''
 
-course_module_url = '/course-modules/'
-lessons_url       = '/lessons/'
+
+
+COURSE_MODULES_URL = '/course-modules/'
+LESSONS_URL       = '/lessons/'
+
 
 response = requests.get(
-  Constants.API_BASE_URL + course_name,
+  Constants.API_BASE_URL + Constants.COURSE_NAME,
   headers = {
     'Accept': 'application/json',
-    'authorization': 'Bearer ' + Constants.BEARER
+    'authorization': 'Bearer ' + Constants.API_BEARER
   }
 )
 
@@ -22,18 +25,19 @@ if response.status_code == 200:
   courseModule_slug = ''
   userCourseModuleLesson_slug = ''
 
+  """
   for userCourseModule in json_response['data']['userCourseModules']['data']:
     courseModule_slug = userCourseModule['courseModule']['data']['slug']
     for userCourseModuleLesson in userCourseModule['userCourseModuleLessons']['data']:
       userCourseModuleLesson_slug = userCourseModuleLesson['lesson']['data']['slug']
 
-      lesson_url = Constants.API_BASE_URL + course_name + course_module_url + courseModule_slug + lessons_url + userCourseModuleLesson_slug
+      lesson_url = API_BASE_URL + COURSE_NAME + COURSE_MODULES_URL + courseModule_slug + LESSONS_URL + userCourseModuleLesson_slug
       
       response = requests.patch(
         lesson_url,
         headers = {
           'Accept': 'application/json',
-          'authorization': 'Bearer ' + Constants.BEARER
+          'authorization': 'Bearer ' + API_BEARER
         },
         params = {'action': 'start'},
       )
@@ -44,7 +48,7 @@ if response.status_code == 200:
 
         for video in json_response['data']['lesson']['data']['lessonParts']['data']:
           video_title = str(video['position']).zfill(2) + '_' + video['title'].replace(' ', '_')
-          video_url = Constants.VIMEO_BASE_URL + video['video_id']
+          video_url = VIMEO_BASE_URL + video['video_id']
 
           response = requests.get(
             video_url,
@@ -69,6 +73,7 @@ if response.status_code == 200:
         break
       else:
         print(str(response.status_code) + ' ' + lesson_url)
+      """
 else:
-  print(str(response.status_code) + ' ' + Constants.API_BASE_URL)
+  print(str(response.status_code) + ' GET ' + Constants.API_BASE_URL + Constants.COURSE_NAME)
 
