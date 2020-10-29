@@ -20,7 +20,6 @@ if response.status_code == 200:
 
   courseModule_slug = ''
   userCourseModuleLesson_slug = ''
-
   
   for userCourseModule in json_response['data']['userCourseModules']['data']:
     courseModule_slug = userCourseModule['courseModule']['data']['slug']
@@ -45,7 +44,7 @@ if response.status_code == 200:
         for video in json_response['data']['lesson']['data']['lessonParts']['data']:
           video_title = str(video['position']).zfill(2) + '_' + video['title'].replace(' ', '_')
           video_url = Constants.VIMEO_BASE_URL + video['video_id']
-          """
+          
           response = requests.get(
             video_url,
             headers = {
@@ -54,23 +53,22 @@ if response.status_code == 200:
           )
           if response.status_code == 200:
             text_response = response.text
-
+            
             end_url_str = 'master.json?base64_init=1'
             end_url = text_response.rfind(end_url_str, 0, len(text_response))
             start_url = text_response.rfind('https', 0, end_url)
 
             video_cdn_url = text_response[start_url:end_url + len(end_url_str)]
 
-            print(video_cdn_url + ',' + lesson_title + '/' + video_title)
+            print('python3 ' + Constants.VIMEO_DOWNLOAD_PATH + ' --url ' + video_cdn_url + ' --output ' + Constants.COURSE_NAME.replace('-', '_') + '/'+ lesson_title + '/' + video_title + ' --destination ' + Constants.  VIDEO_DOWNLOAD_DST)
           else:
-            print(str(response.status_code) + ' ' + video_url)
-      """   
+            print(str(response.status_code) + ' GET ' + video_url)
+      
       elif response.status_code == 403:
-        print(str(response.status_code) + ' Get module (not available) ' + lesson_url)
-        break
+        print(str(response.status_code) + ' PATCH ' + lesson_url)
+        #break
       else:
-        print(str(response.status_code) + ' Get module' + lesson_url)
-  
+        print(str(response.status_code) + ' PATCH ' + lesson_url)
 else:
-  print(str(response.status_code) + ' Get course' + Constants.API_BASE_URL + Constants.COURSE_NAME)
+  print(str(response.status_code) + ' GET ' + Constants.API_BASE_URL + Constants.COURSE_NAME)
 
